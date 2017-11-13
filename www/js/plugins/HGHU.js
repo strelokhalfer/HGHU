@@ -171,7 +171,7 @@ if (StorageManager.isLocalMode()){
         var game_folder = path.dirname(process.mainModule.filename);
 		//Достраиваем путь к файлу коммита
 		file_path = path.join(game_folder, 'data/Commit.json');
-            
+        
 		//Коллбек срабатывающий когда запрос свершается
 		xhr_master.onreadystatechange = function() {
 			//Если он успешный, конечно же
@@ -268,10 +268,6 @@ if (StorageManager.isLocalMode()){
                 //Если файла нет
             if (err.code === 'ENOENT') {
                 //То значит обновления пока нет, или мы его ещё не получили.
-                //Подготавливаем запрос
-                var xhr_master = new XMLHttpRequest();
-                //Базовая ссылка на репозиторий
-                var url_base = `https://api.github.com/repos/${HGHU_GitName}/${HGHU_GitRepo}`;
                 //Достраиваем путь к файлу коммита
                 file_path = path.join(game_folder, 'data/Commit.json');
                 //Проверка на то, нужно ли считать хеш из файла
@@ -321,7 +317,7 @@ if (StorageManager.isLocalMode()){
             //Обрезаем www/ ибо путь проекта и так включает в себя её
             var valid_path = key.substring(3);
             //Получаем полный путь до файла
-            file_path = path.join(game_folder, key);
+            file_path = path.join(game_folder, valid_path);
             //Конечная папка файла, нужно для того, что бы не вывалилось, если папки нет
             var file_folder = path.dirname(file_path);
             //Рекурсивно создадим недостающие папки.

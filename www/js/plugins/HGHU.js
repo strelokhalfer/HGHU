@@ -324,7 +324,23 @@ if (StorageManager.isLocalMode()){
             MakeFolder(file_folder);
             //Удаляем файл если нужно
             if (update_data[key] == "EXTERMINATE"){
-                fs.unlink(file_path);
+                fs.unlink(file_path, function(err){
+                    //Если файла вдруг нет, маякнём в консоли
+                    if(err) console.log(err.message);
+                    //Увеличиваем счетчик
+                    count++;
+                    
+                    //Если все файлы получены
+                    if (count == file_count){
+                        //Удаляем файл обновлений 
+                        file_path = path.join(game_folder, 'Update.json');
+                        //Синхронно конечно, будет быстро и нет лишнего геморроя с коллбеками
+                        fs.unlinkSync(file_path);
+                        
+                        //Грузим игру, если обработали все файлы.
+                        HGHU_Scene_Boot_create.call(real_this);
+                    }
+                });
                 //Или закачиваем
             } else {
                 //Открываем потоковую запись файла

@@ -341,7 +341,7 @@ if (StorageManager.isLocalMode()){
                     //Если все файлы получены
                     if (count == file_count){
                         //Удаляем файл обновлений 
-                        file_path = path.join(game_folder, 'www/Update.json');
+                        file_path = path.join(game_folder, 'Update.json');
                         //Синхронно конечно, будет быстро и нет лишнего геморроя с коллбеками
                         fs.unlinkSync(file_path);
                         

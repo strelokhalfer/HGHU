@@ -263,10 +263,8 @@ if (StorageManager.isLocalMode()){
         
         //У синхронного чтения функций срабатывающих при готовности нет, используем блок обработки ошибок.
         try {
-            //Пытаемся прочесть файл
-            file_update = fs.readFileSync(file_commit);
             //Синхронно
-            HGHU_Commit = fs.readFileSync(file_path);
+            HGHU_Commit = fs.readFileSync(file_commit);
             //Конвертируем в строку
             HGHU_Commit = JSON.parse(HGHU_Commit);
             //Перехват ошибки
@@ -276,7 +274,7 @@ if (StorageManager.isLocalMode()){
                 //Конвертируем массив в json строку.
                 var jdata = JSON.stringify(HGHU_Commit);
                 //Сохраняем в файл
-                fs.writeFileSync(file_path, jdata);
+                fs.writeFileSync(file_commit, jdata);
             }
         }
         

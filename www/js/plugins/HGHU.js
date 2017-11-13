@@ -258,6 +258,27 @@ if (StorageManager.isLocalMode()){
         var file_path = path.join(game_folder, 'Update.json');
         //Сюда считаем файл обновления
         var file_update;
+        //Достраиваем путь к файлу коммита
+        var file_commit = path.join(game_folder, 'data/Commit.json');
+        
+        //У синхронного чтения функций срабатывающих при готовности нет, используем блок обработки ошибок.
+        try {
+            //Пытаемся прочесть файл
+            file_update = fs.readFileSync(file_commit);
+            //Синхронно
+            HGHU_Commit = fs.readFileSync(file_path);
+            //Конвертируем в строку
+            HGHU_Commit = JSON.parse(HGHU_Commit);
+            //Перехват ошибки
+        } catch (err) {
+            //Если файла нет
+            if (err.code === 'ENOENT') {
+                //Конвертируем массив в json строку.
+                var jdata = JSON.stringify(HGHU_Commit);
+                //Сохраняем в файл
+                fs.writeFileSync(file_path, jdata);
+            }
+        }
         
         //У синхронного чтения функций срабатывающих при готовности нет, используем блок обработки ошибок.
         try {
@@ -268,34 +289,6 @@ if (StorageManager.isLocalMode()){
                 //Если файла нет
             if (err.code === 'ENOENT') {
                 //То значит обновления пока нет, или мы его ещё не получили.
-                //Достраиваем путь к файлу коммита
-                file_path = path.join(game_folder, 'data/Commit.json');
-                //Проверка на то, нужно ли считать хеш из файла
-                var need_read = true;
-                
-                //У синхронного чтения функций срабатывающих при готовности нет, используем блок обработки ошибок.
-                try {
-                    //Пытаемся прочесть файл
-                    file_update = fs.readFileSync(file_path);
-                    //Перехват ошибки
-                } catch (err) {
-                    //Если файла нет
-                    if (err.code === 'ENOENT') {
-                        //Конвертируем массив в json строку.
-                        var jdata = JSON.stringify(HGHU_Commit);
-                        //Сохраняем в файл
-                        fs.writeFileSync(file_path, jdata);
-                        //Загружать из файла не надо, мы только что его создали.
-                        need_read = false;
-                    }
-                }
-                //Если надо, считываем из файла
-                if (need_read){
-                    //Синхронно
-                    HGHU_Commit = fs.readFileSync(file_path);
-                    //Конвертируем в строку
-                    HGHU_Commit = JSON.parse(HGHU_Commit);
-                }
                 //Продолжаем запуск игры
                 HGHU_Scene_Boot_create.call(this);
                 //И не обрабатываем код ниже(можно и через условие, но зачем нагружать?)
